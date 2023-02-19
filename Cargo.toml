@@ -1,0 +1,29 @@
+[package]
+name = "p2p_name_service"
+version = "1.0.0"
+authors = ["Team STEP <info@teamstep.io>"]
+edition = "2021"
+publish = false
+
+[dependencies]
+ink = { version = "~4.0.0", default-features = false }
+
+scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
+scale-info = { version = "2.3", default-features = false, features = ["derive"], optional = true }
+
+openbrush = { git = "https://github.com/727-Ventures/openbrush-contracts", default-features = false, features = ["psp34"] }
+
+[lib]
+name = "p2p_name_service"
+path = "contract/lib.rs"
+crate-type = ["cdylib"]
+
+[features]
+default = ["std"]
+std = [
+    "ink/std",
+    "scale/std",
+    "scale-info/std",
+    "openbrush/std",
+]
+ink-as-dependency = []
