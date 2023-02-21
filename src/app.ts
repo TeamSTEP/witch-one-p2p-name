@@ -1,24 +1,32 @@
-import express from 'express';
-
+import express, { Express } from 'express';
 import routes from './routes';
+import { ApiPromise } from '@polkadot/api';
 
 class App {
-  public server;
+    public server: Express;
+    public blockchainApi: ApiPromise;
 
-  constructor() {
-    this.server = express();
+    constructor() {
+        console.log('Starting the server');
+        this.server = express();
 
-    this.middlewares();
-    this.routes();
-  }
+        this.initBlockchainInst().then(() => {
+            console.log('Connected to the network');
+        });
 
-  middlewares() {
-    this.server.use(express.json());
-  }
+        this.middlewares();
+        this.routes();
+    }
 
-  routes() {
-    this.server.use(routes);
-  }
+    async initBlockchainInst() {}
+
+    middlewares() {
+        this.server.use(express.json());
+    }
+
+    routes() {
+        this.server.use(routes);
+    }
 }
 
 export default new App().server;
