@@ -6,8 +6,13 @@ routes.get('/', (req, res) => {
     return res.json({ message: 'Hello World' });
 });
 
-routes.get('/app', (req, res) => {
-    return res.json({ message: '<h1>Oh you found me!</h1>' });
+routes.post('/register', (req, res) => {
+    // expect an account and
+    return res.json({ message: 'registering account' });
+});
+
+routes.post('/validate', (req, res) => {
+    return res.status(200).json({ message: 'validated' });
 });
 
 export default routes;

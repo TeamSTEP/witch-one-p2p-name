@@ -1,6 +1,7 @@
 import express, { Express } from 'express';
 import routes from './routes';
-import { ApiPromise } from '@polkadot/api';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { appRateLimiter } from './config';
 
 class App {
     public server: Express;
@@ -18,10 +19,15 @@ class App {
         this.routes();
     }
 
-    async initBlockchainInst() {}
+    async initBlockchainInst() {
+        const wsProvider = new WsProvider('wss://rpc.shibuya.astar.network');
+        this.blockchainApi = await ApiPromise.create({ provider: wsProvider });
+        this.blockchainApi = await this.blockchainApi.isReady;
+    }
 
     middlewares() {
         this.server.use(express.json());
+        this.server.use(appRateLimiter);
     }
 
     routes() {
