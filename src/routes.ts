@@ -7,8 +7,9 @@ routes.get('/', (req, res) => {
 });
 
 routes.post('/register', (req, res) => {
-    // expect an account and
-    return res.json({ message: 'registering account' });
+    // expect an account and name
+    const session = req.session.id;
+    return res.json({ message: 'registering account with session ' + session });
 });
 
 routes.post('/validate', (req, res) => {
