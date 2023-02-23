@@ -27,15 +27,6 @@ class ServerApp {
         this.routes();
     }
 
-    public async getAdminAddress() {
-        // the below is only for testing
-        const { result } = await this.networkInst.contractApi.query.getAdmin(this.networkInst.accountPair.address, {
-            gasLimit: this.networkInst.gasLimit,
-        });
-
-        return result.asOk.data.toString();
-    }
-
     public async registerName(ownerAddress: string, name: string) {
         await this.networkInst.contractApi.tx
             .forceRegister({ gasLimit: this.networkInst.gasLimit }, name, ownerAddress)
@@ -76,6 +67,7 @@ class ServerApp {
         this.server.use(helmet());
         this.server.use(cors());
         this.server.use(bodyParser.json());
+        //this.server.use(bodyParser.urlencoded({ extended: true }));
         this.server.use(morgan('combined'));
 
         this.server.use(

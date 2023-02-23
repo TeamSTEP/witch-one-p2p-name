@@ -4,8 +4,6 @@ import { ContractPromise } from '@polkadot/api-contract';
 import { WeightV2 } from '@polkadot/types/interfaces';
 import { KeyringPair } from '@polkadot/keyring/types';
 
-
-
 export interface User {
     address?: string;
     name?: string;
@@ -69,4 +67,4 @@ export interface TypedRequestQuery<T extends Query> extends Express.Request {
  */
 export interface TypedResponse<ResBody> extends Express.Response {
     json: Send<ResBody, this>;
-  }
+}
