@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { sendTransaction } from '@astar-network/astar-sdk-core';
 
 const routes = Router();
 
@@ -36,35 +37,39 @@ routes.get('/name/:account', async (req, res) => {
 routes.post('/register', async (req, res) => {
     const account = req.body.account as string;
     const name = req.body.name as string;
+    console.log(`Incoming register request from ${req.get('origin')}`);
 
     if (!req.session.isValidated) {
         return res.status(403).json({ error: 'The request is not valid.' });
     }
-
-    console.log(req.body);
 
     if (!account || !name) {
         return res.status(400).json({ error: 'Account or name was not provided in the body.' });
     }
 
     const contractApi = req.networkInst.contractApi;
+    const chainApi = req.networkInst.chainApi;
     const adminAccount = req.networkInst.accountPair;
 
     let responseMsg = '';
 
     try {
-        // error happens here with the type gen
-        await contractApi.tx
-            .forceRegister({ gasLimit: req.networkInst.gasLimit }, name, account)
-            .signAndSend(adminAccount, (result) => {
-                if (result.status.isFinalized) {
-                    responseMsg = 'transaction finalized';
-                }
+        const result = await sendTransaction(
+            chainApi,
+            contractApi,
+            'forceRegister',
+            adminAccount.address,
+            1,
+            name,
+            account,
+        );
 
-                if (result.isError) {
-                    responseMsg = result.dispatchError.toHuman().toString();
-                }
-            });
+        const unsub = await result.signAndSend(adminAccount.address, (txRes) => {
+            if (txRes.status.isFinalized) {
+                responseMsg = 'transaction finalized';
+                unsub();
+            }
+        });
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }
