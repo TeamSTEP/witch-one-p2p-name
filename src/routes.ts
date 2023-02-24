@@ -51,30 +51,31 @@ routes.post('/register', async (req, res) => {
     const chainApi = req.networkInst.chainApi;
     const adminAccount = req.networkInst.accountPair;
 
-    let responseMsg = '';
-
     try {
         const result = await sendTransaction(
             chainApi,
             contractApi,
             'forceRegister',
             adminAccount.address,
-            1,
+            0,
             name,
             account,
         );
 
-        const unsub = await result.signAndSend(adminAccount.address, (txRes) => {
+        const unsub = await result.signAndSend(adminAccount, (txRes) => {
             if (txRes.status.isFinalized) {
-                responseMsg = 'transaction finalized';
                 unsub();
             }
+            if (txRes.isError) {
+                throw new Error(txRes.dispatchError.toHuman().toString())
+            }
         });
+        
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }
 
-    return res.status(200).json({ message: `Transaction message ${responseMsg}.` });
+    return res.status(200).json({ message: `Transaction successfully submitted!` });
 });
 
 routes.post('/validate', (req, res) => {

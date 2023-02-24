@@ -20,7 +20,7 @@ class ServerApp {
         this.server = express();
 
         this.initBlockchainInst().then(() => {
-            console.log('Connected to the network');
+            console.log('Connected to the network as ' + this.networkInst.accountPair.address);
         });
 
         this.middlewares();
