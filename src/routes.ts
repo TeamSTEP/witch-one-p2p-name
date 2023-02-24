@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { sendTransaction } from '@astar-network/astar-sdk-core';
+import { config } from './config';
 
 const routes = Router();
 
@@ -37,7 +38,6 @@ routes.get('/name/:account', async (req, res) => {
 routes.post('/register', async (req, res) => {
     const account = req.body.account as string;
     const name = req.body.name as string;
-    console.log(`Incoming register request from ${req.get('origin')}`);
 
     if (!req.session.isValidated) {
         return res.status(403).json({ error: 'The request is not valid.' });
@@ -67,10 +67,9 @@ routes.post('/register', async (req, res) => {
                 unsub();
             }
             if (txRes.isError) {
-                throw new Error(txRes.dispatchError.toHuman().toString())
+                throw new Error(txRes.dispatchError.toHuman().toString());
             }
         });
-        
     } catch (err) {
         return res.status(500).json({ error: err.message });
     }
@@ -84,6 +83,11 @@ routes.post('/validate', (req, res) => {
 
     if (req.session.isValidated) {
         return res.status(400).json({ message: `User session is already valid.` });
+    }
+
+    // note: this is not a great way to validate sessions as it's easy to spoof the origin host.
+    if (config.isProduction && req.hostname === config.clientDomain) {
+        return res.status(400).json({ message: 'Invalid request origin' });
     }
 
     // todo: implement this
