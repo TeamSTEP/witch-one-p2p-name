@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc --project ./",
     "dev": "nodemon -r dotenv/config src/server.ts",
-    "prod": "node -r dotenv/config dist/server.js",
+    "start": "node -r dotenv/config dist/server.js",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts ."
   },
   "dependencies": {
