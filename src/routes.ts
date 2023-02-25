@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { sendTransaction } from '@astar-network/astar-sdk-core';
 import { config } from './config';
+import * as helpers from './helpers';
 
 const routes = Router();
 
@@ -30,7 +31,11 @@ routes.get('/name/:account', async (req, res) => {
         account,
     );
     // convert the result to a readable format
-    const accountName = result.asOk.data.toString();
+    const hexName = result.asOk.data.toString();
+
+    const accountName = helpers.hexToUtf8String(hexName);
+
+    console.log(`Loaded hash: ${hexName}. Converting to: ${accountName}`);
 
     return res.status(200).json({ message: { name: accountName } });
 });
@@ -51,6 +56,10 @@ routes.post('/register', async (req, res) => {
     const chainApi = req.networkInst.chainApi;
     const adminAccount = req.networkInst.accountPair;
 
+    // convert the name into a hex string
+    const encodedName = helpers.utf8StringToHex(name);
+    console.log(`Provided name: ${name}. Converting to: ${encodedName}`);
+
     try {
         const result = await sendTransaction(
             chainApi,
@@ -58,7 +67,7 @@ routes.post('/register', async (req, res) => {
             'forceRegister',
             adminAccount.address,
             0,
-            name,
+            encodedName,
             account,
         );
 
