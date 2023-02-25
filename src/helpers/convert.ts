@@ -46,7 +46,7 @@ export const hexToUtf8String = (bytes: string) => {
     }
 
     const byteArray = polkaUtils.hexToU8a(bytes);
-    // todo: remove all trailing 0x00 bytes
+    // remove all trailing 0x00 bytes
     const stringHex = byteArray.filter((i) => i !== 0x00);
 
     return polkaUtils.u8aToString(stringHex);
