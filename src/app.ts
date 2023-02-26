@@ -27,18 +27,6 @@ class ServerApp {
         this.routes();
     }
 
-    public async registerName(ownerAddress: string, name: string) {
-        await this.networkInst.contractApi.tx
-            .forceRegister({ gasLimit: this.networkInst.gasLimit }, name, ownerAddress)
-            .signAndSend(this.networkInst.accountPair, (result) => {
-                if (result.status.isInBlock) {
-                    console.log('in a block');
-                } else if (result.status.isFinalized) {
-                    console.log('finalized');
-                }
-            });
-    }
-
     async initBlockchainInst() {
         await waitReady();
         const keyring = new Keyring({ type: 'sr25519' });
