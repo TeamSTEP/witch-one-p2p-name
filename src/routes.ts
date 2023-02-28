@@ -44,9 +44,10 @@ routes.post('/register', async (req, res) => {
     const account = req.body.account as string;
     const name = req.body.name as string;
 
-    if (!req.session.isValidated) {
-        return res.status(403).json({ error: 'The request is not valid.' });
-    }
+    // note: commented this out for debugging purposes
+    // if (!req.session.isValidated) {
+    //     return res.status(403).json({ error: 'The request is not valid.' });
+    // }
 
     if (!account || !name) {
         return res.status(400).json({ error: 'Account or name was not provided in the body.' });
