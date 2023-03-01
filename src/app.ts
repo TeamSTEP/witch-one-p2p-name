@@ -29,7 +29,7 @@ class ServerApp {
 
     async initBlockchainInst() {
         await waitReady();
-        const keyring = new Keyring({ type: 'sr25519' });
+        const keyring = new Keyring({ type: 'sr25519', ss58Format: 5 });
         const accountPair = keyring.addFromMnemonic(config.adminSeed, { name: 'admin' });
 
         const wsProvider = new WsProvider('wss://rpc.shibuya.astar.network');
@@ -61,7 +61,7 @@ class ServerApp {
         this.server.use(
             session({
                 // move this to .env
-                secret: 'this is a test secret',
+                secret: config.sessionSecret,
                 resave: false,
                 saveUninitialized: true,
             }),
