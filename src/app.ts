@@ -61,7 +61,7 @@ class ServerApp {
         this.server.use(
             session({
                 // move this to .env
-                secret: 'this is a test secret',
+                secret: config.sessionSecret,
                 resave: false,
                 saveUninitialized: true,
             }),
